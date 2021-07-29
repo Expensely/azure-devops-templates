@@ -1,0 +1,7 @@
+variables:
+  terraformServiceConnectionName: 'aws_expensely_production_ap-southeast-2'
+  terraformStateBucketName: 'expensely-terraform-production-ap-southeast-2'
+  terraformStateLockTableName: 'expensely-terraform-lock-production-ap-southeast-2'
+  terraformRegion: 'terraformRegion'
+  environment: 'production'
+  artifactName: 'production_ap-southeast-2'
