@@ -1,5 +1,5 @@
 variables:
   region: 'us-east-1'
-  terraformServiceConnectionName: 'Terraform AWS Expensely Production us-east-1'
+  terraformServiceConnectionName: 'Terraform AWS Production us-east-1'
   terraformStateBucketName: 'expensely-terraform-production-us-east-1'
   terraformStateLockTableName: 'expensely-terraform-lock-production-us-east-1'
