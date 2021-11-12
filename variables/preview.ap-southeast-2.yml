@@ -6,3 +6,4 @@ variables:
   terraformStateBucketName: 'expensely-terraform-production-ap-southeast-2'
   terraformStateLockTableName: 'expensely-terraform-lock-production-ap-southeast-2'
   environment: preview
+  testResultsBucketName: expensely-test-results-production
