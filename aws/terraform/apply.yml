@@ -1,0 +1,56 @@
+parameters:
+  - name: applyAdditionalCommandOptions
+    displayName: Additional command options for apply step
+    type: string
+    default: " "
+  - name: archiveName
+    displayName: Name of the archive in the artifact
+    type: string
+    default: terraform.tar.gz
+  - name: artifactName
+    displayName: Name of the artifact to download
+    type: string
+  - name: version
+    displayName: Terraform version
+    type: string
+    default: 1.0.2
+  - name: workingDirectory
+    displayName: Working directory
+    type: string
+    default: $(Pipeline.Workspace)
+
+steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: Download artifact
+    inputs:
+      buildType: current
+      artifactName: ${{ parameters.artifactName }}
+      targetPath: ${{ parameters.workingDirectory }}
+
+  - task: ExtractFiles@1
+    displayName: Extract Archive
+    inputs:
+      archiveFilePatterns: ${{ parameters.workingDirectory }}/${{ parameters.archiveName }}
+      destinationFolder: ${{ parameters.workingDirectory }}
+      cleanDestinationFolder: false
+
+  - task: TerraformInstaller@0
+    displayName: Install version:${{ parameters.version }}
+    inputs:
+      terraformVersion: ${{ parameters.version }}
+
+  - task: PowerShell@2
+    displayName: Apply
+    name: tfApply
+    timeoutInMinutes: 360
+    retryCountOnTaskFailure: 3
+    inputs:
+      targetType: inline
+      script: terraform apply -no-color -auto-approve -lock=true ${{ parameters.applyAdditionalCommandOptions }} plan.tfplan
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+    env:
+      TF_IN_AUTOMATION: 0
+      TF_INPUT: 0
