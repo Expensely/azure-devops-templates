@@ -1,0 +1,38 @@
+parameters:
+  - name: sourcePath
+    displayName: Path of the app spec file
+    type: string
+  - name: destinationPath
+    displayName: Path(key) in the bucket to upload file to
+    type: string
+  - name: codedeployBucketName
+    displayName: Name of the bucket to upload the app spec file to
+    type: string
+  - name: workingDirectory
+    displayName: Directory where the files are located
+    type: string
+    default: $(Pipeline.Workspace)
+
+steps:
+  - task: PowerShell@2
+    displayName: Push app spec file
+    inputs:
+      targetType: inline
+      script: aws s3 cp ${{ parameters.sourcePath }} s3://${{ parameters.codedeployBucketName }}/${{ parameters.destinationPath }}
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+
+  - task: PowerShell@2
+    displayName: Deploy
+    inputs:
+      targetType: inline
+      script: |
+        $deploymentId = aws deploy create-deployment --cli-input-json file://create-deployment.json --output json --query 'deploymentId' | ConvertFrom-Json
+        Write-Host "Waiting for deployment:$deploymentId to finish"
+        aws deploy wait deployment-successful --deployment-id $deploymentId
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
