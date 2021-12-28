@@ -67,4 +67,4 @@ steps:
       coverageFailOption: fixed
       coverageType: branches
       treat0of0as100: true
-      coverageThreshold: '${{ parameters.coverageThreshold }}
+      coverageThreshold: ${{ parameters.coverageThreshold }}

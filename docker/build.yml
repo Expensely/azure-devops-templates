@@ -14,12 +14,18 @@ parameters:
     displayName: Additional argument values
     type: string
     default: " "
+  - name: workingDirectory
+    displayName: Directory where the terraform files are stored
+    type: string
+    default: $(Build.SourcesDirectory)
 
 steps:
-  - task: Docker@2
+  - task: PowerShell@2
     displayName: Build ${{ parameters.target }}
     inputs:
-      command: build
-      Dockerfile: '${{ parameters.dockerfilePath }}'
-      arguments: '--target ${{ parameters.target }} -t ${{ parameters.target }}:${{ parameters.tag }} ${{ parameters.argument }}'
-      addPipelineData: false
+      targetType: inline
+      script: docker build -f ${{ parameters.dockerfilePath }} --target ${{ parameters.target }} -t ${{ parameters.target }}:${{ parameters.tag }} ${{ parameters.argument }} .
+      showWarnings: true
+      errorActionPreference: default
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
