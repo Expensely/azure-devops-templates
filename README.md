@@ -20,6 +20,38 @@ variables:
   - template: variables/production.ap-southeast-2.yml@expensely-templates
 ```
 
+## AWS
+### Setup
+To use any of the AWS templates you will need to set up a variable group for the variables listed below and use the group in the relevant pipeline, stage or job. The environment variables will be added to the Azure DevOps tasks and will be consumed as either CLI env variables or pipeline environment variables.
+
+| Name                  | Description               |
+|:----------------------|:--------------------------|
+| AWS_ACCESS_KEY_ID     | AWS credential access key |
+| AWS_ACCOUNT_ID        | AWS account ID            |
+| AWS_DEFAULT_REGION    | AWS default region        |
+| AWS_SECRET_ACCESS_KEY | AWS secret access key     |
+
+### CLI
+#### ECR push
+Push an image to ECR.
+
+The [ecr/push.yml](./aws/cli/ecr/push.yml) is a [step template](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#step-reuse) meaning it needs to be nested under a `steps:` block.
+
+##### Parameters
+| Name                  | Description                             | Type   | Default                |
+|:----------------------|:----------------------------------------|:-------|:-----------------------|
+| imageName             | Name of the image to push               | string |                        |
+| repositoryName        | Name of the repository to push image to | string |                        |
+| tag                   | Tag of the image to push                | string | `$(Build.BuildNumber)` |
+
+##### Example
+```yaml
+- template: ./aws/cli/ecr.push.yml@templates
+  parameters:
+    imageName: migration
+    repositoryName: migration
+```
+
 ## Docker
 #### Build
 To build the specified target in a `Dockerfile`.

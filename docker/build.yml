@@ -17,7 +17,7 @@ parameters:
 
 steps:
   - task: Docker@2
-    displayName: Build ${{ parameters.target }} image
+    displayName: Build ${{ parameters.target }}
     inputs:
       command: build
       Dockerfile: '${{ parameters.dockerfilePath }}'

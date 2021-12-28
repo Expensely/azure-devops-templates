@@ -1,0 +1,26 @@
+parameters:
+  - name: imageName
+    displayName: Name of the image to push
+    type: string
+  - name: repositoryName
+    displayName: Name of the repository to push image to
+    type: string
+  - name: tag
+    displayName: Tag of the image to push
+    type: string
+    default: $(Build.BuildNumber)
+
+steps:
+  - task: PowerShell@2
+    displayName: Push ${{ parameters.imageName }}
+    inputs:
+      targetType: inline
+      script: |
+        $EcrUrl="$(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com"
+        $EcrImageTag="$EcrUrl/${{ parameters.repositoryName }}:${{ parameters.tag }}"
+        docker tag ${{ parameters.imageName }}:${{ parameters.tag }} $EcrImageTag
+        aws ecr get-login-password | docker login --password-stdin --username AWS $EcrUrl
+        docker push $EcrImageTag
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
