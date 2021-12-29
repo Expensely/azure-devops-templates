@@ -1,0 +1,82 @@
+parameters:
+  - name: version
+    displayName: Terraform version
+    type: string
+    default: 1.0.2
+  - name: initAdditionalCommandOptions
+    displayName: Additional command options for Terraform init
+    type: string
+    default: " "
+  - name: destroyAdditionalArguments
+    displayName: Additional command options for Terraform destroy command
+    type: string
+    default: " "
+  - name: workingDirectory
+    displayName: Directory where the terraform files are stored
+    type: string
+    default: $(Build.SourcesDirectory)/infrastructure
+  - name: workspaceName
+    displayName: Terraform workspace name
+    type: string
+
+steps:
+  - task: TerraformInstaller@0
+    displayName: Install version:${{ parameters.version }}
+    name: tfInstall
+    inputs:
+      terraformVersion: ${{ parameters.version }}
+
+  - task: PowerShell@2
+    displayName: Initialise
+    inputs:
+      targetType: inline
+      script: terraform init -no-color ${{ parameters.initAdditionalCommandOptions }}
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+    env:
+      TF_IN_AUTOMATION: 0
+      TF_INPUT: 0
+      TF_CLI_ARGS_init: $(TF_CLI_ARGS_INIT)
+
+  - task: PowerShell@2
+    displayName: Select workspace
+    inputs:
+      targetType: inline
+      script: |
+        $lowerWorkspaceName='${{ lower(parameters.workspaceName) }}'
+        terraform workspace select $lowerWorkspaceName || terraform workspace new $lowerWorkspaceName
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+    env:
+      TF_IN_AUTOMATION: 0
+      TF_INPUT: 0
+
+  - task: PowerShell@2
+    displayName: Destroy
+    inputs:
+      targetType: inline
+      script: terraform init -no-color ${{ parameters.destroyAdditionalArguments }}
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+    env:
+      TF_IN_AUTOMATION: 0
+      TF_INPUT: 0
+
+  - task: PowerShell@2
+    displayName: Delete workspace
+    inputs:
+      targetType: inline
+      script: |
+        $lowerWorkspace='${{ lower(parameters.workspaceName) }}'
+        terraform workspace select default
+        terraform workspace delete $lowerWorkspace
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
