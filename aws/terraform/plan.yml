@@ -25,13 +25,11 @@ parameters:
 steps:
   - task: TerraformInstaller@0
     displayName: Install version:${{ parameters.version }}
-    name: tfInstall
     inputs:
       terraformVersion: ${{ parameters.version }}
 
   - task: PowerShell@2
     displayName: Initialise
-    name: tfInitialise
     inputs:
       targetType: inline
       script: terraform init -no-color ${{ parameters.initAdditionalCommandOptions }}
@@ -45,8 +43,7 @@ steps:
       TF_CLI_ARGS_init: $(TF_CLI_ARGS_INIT)
 
   - task: PowerShell@2
-    displayName: Workspace
-    name: tfWorkspace
+    displayName: Select workspace
     inputs:
       targetType: inline
       script: |
@@ -62,7 +59,6 @@ steps:
 
   - task: PowerShell@2
     displayName: Plan
-    name: tfPlan
     inputs:
       targetType: inline
       script: terraform plan -no-color -out="plan.tfplan" ${{ parameters.planAdditionalCommandOptions }}
@@ -76,7 +72,6 @@ steps:
 
   - task: ArchiveFiles@2
     displayName: Archive
-    name: tfArchive
     inputs:
       rootFolderOrFile: ${{ parameters.workingDirectory }}
       includeRootFolder: false
@@ -87,7 +82,6 @@ steps:
 
   - task: PublishBuildArtifacts@1
     displayName: Publish
-    name: tfPublish
     inputs:
       PathtoPublish: ${{ parameters.workingDirectory }}/terraform.tar.gz
       ArtifactName: ${{ parameters.artifactName }}
