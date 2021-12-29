@@ -1,0 +1,43 @@
+parameters:
+  - name: testResultsBucketName
+    displayName: Name of the bucket to download tests results from
+    type: string
+  - name: sourcePath
+    displayName: Key of the test results file
+    type: string
+  - name: destinationFile
+    displayName:
+    type: string
+  - name: testRunTitle
+    displayName:
+    type: string
+  - name: workingDirectory
+    displayName: Directory where the files are located
+    type: string
+    default: $(Pipeline.Workspace)
+  - name: testResultsFormat
+    displayName: Tests results format
+    type: string
+    default: JUnit
+
+steps:
+  - task: PowerShell@2
+    displayName: Download test results file:${{ parameters.destinationFile }}
+    condition: succeededOrFailed()
+    inputs:
+      targetType: inline
+      script: aws s3 cp s3://${{ parameters.testResultsBucketName }}/${{ parameters.sourcePath }} ${{ parameters.destinationFile }}
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+    
+  - task: PublishTestResults@2
+    displayName: Publish test results file:${{ parameters.destinationFile }}
+    condition: succeededOrFailed()
+    inputs:
+      failTaskOnFailedTests: true
+      searchFolder: ${{ parameters.workingDirectory }}
+      testRunTitle: ${{ parameters.testRunTitle }}
+      testResultsFiles: ${{ parameters.destinationFile }}
+      testResultsFormat: ${{ parameters.testResultsFormat }}
