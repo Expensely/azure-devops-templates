@@ -16,6 +16,7 @@ steps:
     inputs:
       targetType: inline
       script: |
+        Get-ChildItem Env:
         $EcrUrl="$(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_DEFAULT_REGION).amazonaws.com"
         $EcrImageTag="$EcrUrl/${{ parameters.repositoryName }}:${{ parameters.tag }}"
         docker tag ${{ parameters.imageName }}:${{ parameters.tag }} $EcrImageTag
