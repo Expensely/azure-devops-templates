@@ -1,6 +1,3 @@
 variables:
-  region: 'us-east-1'
-  terraformServiceConnectionName: 'Terraform AWS Production us-east-1'
-  terraformStateBucketName: 'expensely-terraform-production-us-east-1'
-  terraformStateLockTableName: 'expensely-terraform-lock-production-us-east-1'
-  environment: preview
+  ENVIRONMENT: preview
+  TF_CLI_ARGS_INIT: -backend-config="dynamodb_table=expensely-terraform-lock-production-us-east-1" -backend-config="bucket=expensely-terraform-production-us-east-1"

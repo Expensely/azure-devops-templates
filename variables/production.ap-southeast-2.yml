@@ -1,9 +1,5 @@
 variables:
-  awsServiceConnectionName: 'AWS ap-southeast-2 production'
-  codedeployBucketName: 'expensely-code-deploy-production'
-  region: 'ap-southeast-2'
-  terraformServiceConnectionName: 'Terraform AWS Production ap-southeast-2'
-  terraformStateBucketName: 'expensely-terraform-production-ap-southeast-2'
-  terraformStateLockTableName: 'expensely-terraform-lock-production-ap-southeast-2'
-  environment: production
-  testResultsBucketName: expensely-test-results-production
+  CODEDEPLOY_BUCKET_NAME: expensely-code-deploy-production
+  ENVIRONMENT: production
+  TF_CLI_ARGS_INIT: -backend-config="dynamodb_table=expensely-terraform-lock-production-ap-southeast-2" -backend-config="bucket=expensely-terraform-production-ap-southeast-2"
+  TEST_RESULTS_BUCKET_NAME: expensely-test-results-production
