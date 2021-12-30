@@ -1,13 +1,17 @@
 parameters:
-  - name: testResultsBucketName
-    displayName: Name of the bucket to download tests results from
+  - name: destinationFile
+    displayName:
     type: string
   - name: sourcePath
     displayName: Key of the test results file
     type: string
-  - name: destinationFile
-    displayName:
+  - name: testResultsBucketName
+    displayName: Name of the bucket to download tests results from
     type: string
+  - name: testResultsFormat
+    displayName: Tests results format
+    type: string
+    default: JUnit
   - name: testRunTitle
     displayName:
     type: string
@@ -15,10 +19,6 @@ parameters:
     displayName: Directory where the files are located
     type: string
     default: $(Pipeline.Workspace)
-  - name: testResultsFormat
-    displayName: Tests results format
-    type: string
-    default: JUnit
 
 steps:
   - task: PowerShell@2

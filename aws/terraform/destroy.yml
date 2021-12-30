@@ -1,16 +1,16 @@
 parameters:
-  - name: version
-    displayName: Terraform version
-    type: string
-    default: 1.0.2
-  - name: initAdditionalCommandOptions
-    displayName: Additional command options for Terraform init
-    type: string
-    default: " "
   - name: destroyAdditionalArguments
     displayName: Additional command options for Terraform destroy command
     type: string
     default: " "
+  - name: initAdditionalCommandOptions
+    displayName: Additional command options for Terraform init
+    type: string
+    default: " "
+  - name: version
+    displayName: Terraform version
+    type: string
+    default: 1.0.2
   - name: workingDirectory
     displayName: Directory where the terraform files are stored
     type: string

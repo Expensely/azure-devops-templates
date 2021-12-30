@@ -1,12 +1,12 @@
 parameters:
-  - name: sourcePath
-    displayName: Path of the app spec file
+  - name: codedeployBucketName
+    displayName: Name of the bucket to upload the app spec file to
     type: string
   - name: destinationPath
     displayName: Path(key) in the bucket to upload file to
     type: string
-  - name: codedeployBucketName
-    displayName: Name of the bucket to upload the app spec file to
+  - name: sourcePath
+    displayName: Path of the app spec file
     type: string
   - name: workingDirectory
     displayName: Directory where the files are located
