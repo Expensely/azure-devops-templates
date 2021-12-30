@@ -1,6 +1,7 @@
 variables:
   AWS_ACCOUNT_ID: 395617268302
   AWS_DEFAULT_REGION: ap-southeast-2
+  AWS_PROFILE: preview
   CODEDEPLOY_BUCKET_NAME: expensely-code-deploy-production
   ENVIRONMENT: preview
   TF_CLI_ARGS_INIT: -backend-config="dynamodb_table=expensely-terraform-lock-production-ap-southeast-2" -backend-config="bucket=expensely-terraform-production-ap-southeast-2"
