@@ -12,11 +12,11 @@ parameters:
     type: string
     default: 1.0.2
   - name: workingDirectory
-    displayName: Directory where the terraform files are stored
+    displayName: Directory where terraform files are located
     type: string
     default: $(Build.SourcesDirectory)/infrastructure
   - name: workspaceName
-    displayName: Terraform workspace name
+    displayName: Terraform workspace
     type: string
 
 steps:

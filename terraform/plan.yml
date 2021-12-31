@@ -1,13 +1,13 @@
 parameters:
   - name: artifactName
-    displayName: Name of the artifact produced and published
+    displayName: Name of the published artifact
     type: string
   - name: initAdditionalCommandOptions
     displayName: Additional command options for Terraform init
     type: string
     default: " "
   - name: planAdditionalCommandOptions
-    displayName: Additional command options for the Terraform plan step
+    displayName: Additional command options for the Terraform plan
     type: string
     default: " "
   - name: version
@@ -15,11 +15,11 @@ parameters:
     type: string
     default: 1.0.2
   - name: workingDirectory
-    displayName: Directory where the terraform files are stored
+    displayName: Directory where terraform files are located
     type: string
     default: $(Build.SourcesDirectory)/infrastructure
   - name: workspaceName
-    displayName: Terraform workspace name
+    displayName: Terraform workspace
     type: string
 
 steps:

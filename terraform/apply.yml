@@ -1,14 +1,10 @@
 parameters:
   - name: applyAdditionalCommandOptions
-    displayName: Additional command options for apply step
+    displayName: Additional command options for Terraform apply
     type: string
     default: " "
-  - name: archiveName
-    displayName: Name of the archive in the artifact
-    type: string
-    default: terraform.tar.gz
   - name: artifactName
-    displayName: Name of the artifact to download
+    displayName: Name of the published artifact to download
     type: string
   - name: version
     displayName: Terraform version
@@ -28,9 +24,9 @@ steps:
       targetPath: ${{ parameters.workingDirectory }}
 
   - task: ExtractFiles@1
-    displayName: Extract Archive
+    displayName: Extract archive
     inputs:
-      archiveFilePatterns: ${{ parameters.workingDirectory }}/${{ parameters.archiveName }}
+      archiveFilePatterns: ${{ parameters.workingDirectory }}/terraform.tar.gz
       destinationFolder: ${{ parameters.workingDirectory }}
       cleanDestinationFolder: false
 
