@@ -1,12 +1,12 @@
 parameters:
   - name: destinationPath
-    displayName: Path(key) in the bucket to upload file to
+    displayName: Path(key) in the bucket to upload the specified file to
     type: string
-  - name: sourcePath
-    displayName: Path of the app spec file
+  - name: fileName
+    displayName: Name of the app spec file to upload
     type: string
   - name: workingDirectory
-    displayName: Directory where the files are located
+    displayName: Directory where the app spec file is located
     type: string
     default: $(Pipeline.Workspace)
 
@@ -15,7 +15,7 @@ steps:
     displayName: Push app spec file
     inputs:
       targetType: inline
-      script: aws s3 cp ${{ parameters.sourcePath }} s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.destinationPath }}
+      script: aws s3 cp ${{ parameters.fileName }} s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.destinationPath }}/${{ parameters.fileName }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
