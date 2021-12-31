@@ -1,6 +1,6 @@
 parameters:
-  - name: destinationFile
-    displayName:
+  - name: fileName
+    displayName: Name of test results file
     type: string
   - name: sourcePath
     displayName: Key of the test results file
@@ -10,7 +10,7 @@ parameters:
     type: string
     default: JUnit
   - name: testRunTitle
-    displayName:
+    displayName: Title of the test run
     type: string
   - name: workingDirectory
     displayName: Directory where the files are located
@@ -19,22 +19,22 @@ parameters:
 
 steps:
   - task: PowerShell@2
-    displayName: Download test results file:${{ parameters.destinationFile }}
+    displayName: Download test results file:${{ parameters.fileName }}
     condition: succeededOrFailed()
     inputs:
       targetType: inline
-      script: aws s3 cp s3://$(TEST_RESULTS_BUCKET_NAME)/${{ parameters.sourcePath }} ${{ parameters.destinationFile }}
+      script: aws s3 cp s3://$(TEST_RESULTS_BUCKET_NAME)/${{ parameters.sourcePath }}/${{ parameters.fileName }} ${{ parameters.fileName }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
       workingDirectory: ${{ parameters.workingDirectory }}
     
   - task: PublishTestResults@2
-    displayName: Publish test results file:${{ parameters.destinationFile }}
+    displayName: Publish test results file:${{ parameters.fileName }}
     condition: succeededOrFailed()
     inputs:
       failTaskOnFailedTests: true
       searchFolder: ${{ parameters.workingDirectory }}
       testRunTitle: ${{ parameters.testRunTitle }}
-      testResultsFiles: ${{ parameters.destinationFile }}
+      testResultsFiles: ${{ parameters.fileName }}
       testResultsFormat: ${{ parameters.testResultsFormat }}
