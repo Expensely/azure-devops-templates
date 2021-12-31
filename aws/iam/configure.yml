@@ -3,10 +3,6 @@ parameters:
     displayName: Name of the secure file to download
     type: string
     default: $(AWS_CREDENTIALS_SECURE_FILE_NAME)
-  - name: awsProfile
-    displayName:
-    type: string
-    default: $(AWS_PROFILE)
 
 steps:
   - task: DownloadSecureFile@1
@@ -19,9 +15,9 @@ steps:
     inputs:
       targetType: inline
       script: |
-        aws configure --profile $(AWS_PROFILE) 
+        aws configure
       errorActionPreference: default
       showWarnings: true
       pwsh: true
     env:
-      AWS_SHARED_CREDENTIALS_FILE: $(${{ parameters.secureFile }}.secureFilePath)
+      AWS_SHARED_CREDENTIALS_FILE: /home/vsts/work/_temp/${{ parameters.secureFile }}
