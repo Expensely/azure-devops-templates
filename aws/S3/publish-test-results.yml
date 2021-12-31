@@ -5,9 +5,6 @@ parameters:
   - name: sourcePath
     displayName: Key of the test results file
     type: string
-  - name: testResultsBucketName
-    displayName: Name of the bucket to download tests results from
-    type: string
   - name: testResultsFormat
     displayName: Tests results format
     type: string
@@ -26,7 +23,7 @@ steps:
     condition: succeededOrFailed()
     inputs:
       targetType: inline
-      script: aws s3 cp s3://${{ parameters.testResultsBucketName }}/${{ parameters.sourcePath }} ${{ parameters.destinationFile }}
+      script: aws s3 cp s3://$(TEST_RESULTS_BUCKET_NAME)/${{ parameters.sourcePath }} ${{ parameters.destinationFile }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true

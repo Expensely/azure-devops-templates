@@ -1,0 +1,22 @@
+parameters:
+  - name: secureFileName
+    displayName: Name of the secure file to download
+    type: string
+
+steps:
+  - task: DownloadSecureFile@1
+    displayName: Download AWS credentials
+    inputs:
+      secureFile: $(AWS_CREDENTIALS_SECURE_FILE_NAME)
+
+  - task: PowerShell@2
+    displayName: Configure AWS credentials
+    inputs:
+      targetType: inline
+      script: |
+        aws configure --profile $(AWS_PROFILE) 
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+    env:
+      AWS_SHARED_CREDENTIALS_FILE: $($(AWS_CREDENTIALS_SECURE_FILE_NAME).secureFilePath)

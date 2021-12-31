@@ -1,7 +1,4 @@
 parameters:
-  - name: codedeployBucketName
-    displayName: Name of the bucket to upload the app spec file to
-    type: string
   - name: destinationPath
     displayName: Path(key) in the bucket to upload file to
     type: string
@@ -18,7 +15,7 @@ steps:
     displayName: Push app spec file
     inputs:
       targetType: inline
-      script: aws s3 cp ${{ parameters.sourcePath }} s3://${{ parameters.codedeployBucketName }}/${{ parameters.destinationPath }}
+      script: aws s3 cp ${{ parameters.sourcePath }} s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.destinationPath }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
