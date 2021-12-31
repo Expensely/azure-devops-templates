@@ -1,9 +1,9 @@
 parameters:
   - name: dependsOn
-    displayName: Job name that needs to happen before this job
+    displayName: Name of job that needs to complete before this job
     type: string
   - name: timeoutInMinutes
-    displayName: Number of minutes unit job times out
+    displayName: Number of minutes until this job times out
     type: number
     default: 60
   - name: notifyUsers
