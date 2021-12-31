@@ -7,7 +7,7 @@ parameters:
     displayName: Name of target to build
     type: string
   - name: tag
-    displayName: Tag of image
+    displayName: Value to tag image with
     type: string
     default: $(Build.BuildNumber)
   - name: arguments
@@ -15,7 +15,7 @@ parameters:
     type: string
     default: " "
   - name: workingDirectory
-    displayName: Directory where the terraform files are stored
+    displayName: Directory where the related files are located
     type: string
     default: $(Build.SourcesDirectory)
 

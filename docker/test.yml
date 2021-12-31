@@ -1,18 +1,18 @@
 parameters:
-  - name: containerTestResultsDirectory
-    displayName: Path in the container to where test results are written to
-    type: string
-    default: /artifacts/tests
   - name: containerName
     displayName: Name of the container to run
     type: string
     default: tests
+  - name: containerTestResultsDirectory
+    displayName: Path in the container where test results are written
+    type: string
+    default: /artifacts/tests
   - name: coverageThreshold
-    displayName: Threshold for code coverage
+    displayName: Code coverage threshold
     type: string
     default: 60
   - name: pathToSources
-    displayName: Directory containing source code
+    displayName: Path to source code
     type: string
     default: $(System.DefaultWorkingDirectory)
   - name: tag
