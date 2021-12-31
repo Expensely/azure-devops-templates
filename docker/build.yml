@@ -10,7 +10,7 @@ parameters:
     displayName: Tag of image
     type: string
     default: $(Build.BuildNumber)
-  - name: argument
+  - name: arguments
     displayName: Additional argument values
     type: string
     default: " "
@@ -24,7 +24,7 @@ steps:
     displayName: Build ${{ parameters.target }}
     inputs:
       targetType: inline
-      script: docker build -f ${{ parameters.dockerfilePath }} --target ${{ parameters.target }} -t ${{ parameters.target }}:${{ parameters.tag }} ${{ parameters.argument }} .
+      script: docker build -f ${{ parameters.dockerfilePath }} --target ${{ parameters.target }} -t ${{ parameters.target }}:${{ parameters.tag }} ${{ parameters.arguments }} .
       showWarnings: true
       errorActionPreference: default
       pwsh: true
