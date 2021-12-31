@@ -1,5 +1,6 @@
 variables:
   AWS_ACCOUNT_ID: 395617268302
+  AWS_CREDENTIALS_SECURE_FILE_NAME: aws.credentials
   AWS_DEFAULT_REGION: us-east-1
   AWS_PROFILE: preview.us-east-1
   ENVIRONMENT: preview
