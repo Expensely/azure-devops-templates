@@ -1,8 +1,18 @@
+parameters:
+  - name: secureFile
+    displayName: Name of the secure file to download
+    type: string
+    default: ${{ variables.AWS_CREDENTIALS_SECURE_FILE_NAME }}
+  - name: awsProfile
+    displayName:
+    type: string
+    default: $(AWS_PROFILE)
+
 steps:
   - task: DownloadSecureFile@1
     displayName: Download AWS credentials
     inputs:
-      secureFile: ${{ variables.AWS_CREDENTIALS_SECURE_FILE_NAME }}
+      secureFile: ${{ parameters.secureFile }}
 
   - task: PowerShell@2
     displayName: Configure AWS credentials
@@ -14,4 +24,4 @@ steps:
       showWarnings: true
       pwsh: true
     env:
-      AWS_SHARED_CREDENTIALS_FILE: $(${{ variables.AWS_CREDENTIALS_SECURE_FILE_NAME }}.secureFilePath)
+      AWS_SHARED_CREDENTIALS_FILE: $(${{ parameters.secureFile }}.secureFilePath)
