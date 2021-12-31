@@ -1,6 +1,6 @@
 variables:
   AWS_ACCOUNT_ID: 395617268302
-  AWS_CREDENTIALS_SECURE_FILE_NAME: aws.credentials
+  AWS_CREDENTIALS_SECURE_FILE_NAME: aws-credentials
   AWS_DEFAULT_REGION: ap-southeast-2
   AWS_PROFILE: production.ap-southeast-2
   CODEDEPLOY_BUCKET_NAME: expensely-code-deploy-production
