@@ -43,7 +43,7 @@ steps:
     inputs:
       targetType: inline
       script: terraform apply -no-color -auto-approve -lock=true ${{ parameters.applyAdditionalCommandOptions }} plan.tfplan
-      errorActionPreference: default
+      errorActionPreference: stop
       showWarnings: true
       pwsh: true
       workingDirectory: ${{ parameters.workingDirectory }}

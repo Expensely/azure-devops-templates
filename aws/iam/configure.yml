@@ -11,13 +11,12 @@ steps:
       secureFile: ${{ parameters.secureFile }}
 
   - task: PowerShell@2
-    displayName: Configure AWS credentials
+    displayName: Set AWS credentials path
     inputs:
       targetType: inline
       script: |
-        aws configure
+        echo "##vso[task.setvariable variable=AWS_SHARED_CREDENTIALS_FILE]/home/vsts/work/_temp/${{ parameters.secureFile }}"
+        Write-Host "AWS_SHARED_CREDENTIALS_FILE:$env:AWS_SHARED_CREDENTIALS_FILE"
       errorActionPreference: default
       showWarnings: true
       pwsh: true
-    env:
-      AWS_SHARED_CREDENTIALS_FILE: /home/vsts/work/_temp/${{ parameters.secureFile }}

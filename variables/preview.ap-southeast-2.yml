@@ -1,8 +1,8 @@
 variables:
   AWS_ACCOUNT_ID: 395617268302
-  AWS_CREDENTIALS_SECURE_FILE_NAME: aws-credentials
+  AWS_CREDENTIALS_SECURE_FILE_NAME: aws.preview.ap-southeast-2.credentials
+  AWS_SHARED_CREDENTIALS_FILE: /home/vsts/work/_temp/aws.preview.ap-southeast-2.credentials
   AWS_DEFAULT_REGION: ap-southeast-2
-  AWS_PROFILE: preview.ap-southeast-2
   CODEDEPLOY_BUCKET_NAME: expensely-code-deploy-production
   ENVIRONMENT: preview
   TF_CLI_ARGS_INIT: -backend-config="dynamodb_table=expensely-terraform-lock-production-ap-southeast-2" -backend-config="bucket=expensely-terraform-production-ap-southeast-2"
