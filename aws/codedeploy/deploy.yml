@@ -23,12 +23,27 @@ steps:
 
   - task: PowerShell@2
     displayName: Deploy
+    name: deploy
     inputs:
       targetType: inline
       script: |
         $deploymentId = aws deploy create-deployment --cli-input-json file://create-deployment.json --output json --query 'deploymentId' | ConvertFrom-Json
+        Write-Host "##vso[task.setvariable variable=deploymentId;isOutput=true]$deploymentId"
         Write-Host "Waiting for deployment:$deploymentId to finish"
         aws deploy wait deployment-successful --deployment-id $deploymentId
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+
+  - task: PowerShell@2
+    displayName: Stop deploy
+    condition: or(and(failed(), ne(variables['deploy.deploymentId'], '')), and(canceled(), ne(variables['deploy.deploymentId'], '')))
+    inputs:
+      targetType: inline
+      script: |
+        Write-Host "$(deploy.deploymentId)"
+        aws deploy stop-deployment --deployment-id $(deploy.deploymentId) --auto-rollback-enabled
       errorActionPreference: default
       showWarnings: true
       pwsh: true

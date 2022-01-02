@@ -15,7 +15,7 @@ steps:
     inputs:
       targetType: inline
       script: |
-        echo "##vso[task.setvariable variable=AWS_SHARED_CREDENTIALS_FILE]/home/vsts/work/_temp/${{ parameters.secureFile }}"
+        Write-Host "##vso[task.setvariable variable=AWS_SHARED_CREDENTIALS_FILE]/home/vsts/work/_temp/${{ parameters.secureFile }}"
         Write-Host "AWS_SHARED_CREDENTIALS_FILE:$env:AWS_SHARED_CREDENTIALS_FILE"
       errorActionPreference: default
       showWarnings: true
