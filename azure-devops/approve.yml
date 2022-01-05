@@ -6,9 +6,13 @@ parameters:
     displayName: Number of minutes until this job times out
     type: number
     default: 60
-  - name: notifyUsers
+  - name: userToNotify
     displayName: Users to notify
     type: string
+  - name: validationInstructions
+    displayName: Validation instructions
+    type: string
+    default: Validate the dependant job
 
 jobs:
   - job: approve
@@ -18,7 +22,7 @@ jobs:
     steps:
       - task: ManualValidation@0
         inputs:
-          notifyUsers: ${{ parameters.notifyUsers }}
+          notifyUsers: ${{ parameters.userToNotify }}
           onTimeout: reject
-          instructions: Validate the Terraform plan
+          instructions: ${{ parameters.validationInstructions }}
         timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
