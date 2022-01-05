@@ -1,9 +1,9 @@
 parameters:
-  - name: fileName
-    displayName: Name of test results file
-    type: string
   - name: sourcePath
     displayName: Key of the test results file
+    type: string
+  - name: testResultsFileName
+    displayName: Name of test results file
     type: string
   - name: testResultsFormat
     displayName: Tests results format
@@ -19,18 +19,18 @@ parameters:
 
 steps:
   - task: PowerShell@2
-    displayName: Download test results file:${{ parameters.fileName }}
+    displayName: Download test results file:${{ parameters.testResultsFileName }}
     condition: succeededOrFailed()
     inputs:
       targetType: inline
-      script: aws s3 cp s3://$(TEST_RESULTS_BUCKET_NAME)/${{ parameters.sourcePath }}/${{ parameters.fileName }} ${{ parameters.fileName }}
+      script: aws s3 cp s3://$(TEST_RESULTS_BUCKET_NAME)/${{ parameters.sourcePath }}/${{ parameters.testResultsFileName }} ${{ parameters.testResultsFileName }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
       workingDirectory: ${{ parameters.workingDirectory }}
     
   - task: PublishTestResults@2
-    displayName: Publish test results file:${{ parameters.fileName }}
+    displayName: Publish test results file:${{ parameters.testResultsFileName }}
     condition: succeededOrFailed()
     inputs:
       failTaskOnFailedTests: true
