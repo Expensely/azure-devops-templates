@@ -2,8 +2,8 @@ parameters:
   - name: destinationPath
     displayName: Path(key) in the bucket to upload the specified file to
     type: string
-  - name: fileName
-    displayName: Name of the app spec file to upload
+  - name: appSpecFileName
+    displayName: Name of the appspec file to upload
     type: string
   - name: workingDirectory
     displayName: Directory where the app spec file is located
@@ -12,10 +12,10 @@ parameters:
 
 steps:
   - task: PowerShell@2
-    displayName: Push app spec file
+    displayName: Push AppSpec file
     inputs:
       targetType: inline
-      script: aws s3 cp ${{ parameters.fileName }} s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.destinationPath }}/${{ parameters.fileName }}
+      script: aws s3 cp ${{ parameters.appSpecFileName }} s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.destinationPath }}/${{ parameters.appSpecFileName }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
