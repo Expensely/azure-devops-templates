@@ -7,7 +7,7 @@ parameters:
     displayName: Name of the published artifact to download
     type: string
   - name: version
-    displayName: Terraform version
+    displayName: Terraform version to download and install
     type: string
     default: 1.0.2
   - name: workingDirectory

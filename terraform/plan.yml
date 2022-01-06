@@ -1,21 +1,21 @@
 parameters:
   - name: artifactName
-    displayName: Name of the published artifact
+    displayName: Name of the published artifact, that contains the plan file, to download and extract
     type: string
   - name: initAdditionalCommandOptions
-    displayName: Additional command options for Terraform init
+    displayName: Additional command options for Terraform init command
     type: string
     default: " "
   - name: planAdditionalCommandOptions
-    displayName: Additional command options for the Terraform plan
+    displayName: Additional command options for the Terraform plan command
     type: string
     default: " "
   - name: version
-    displayName: Terraform version
+    displayName: Terraform version to download and install
     type: string
     default: 1.0.2
   - name: workingDirectory
-    displayName: Directory where terraform files are located
+    displayName: Directory where Terraform files are located
     type: string
     default: $(Build.SourcesDirectory)/infrastructure
   - name: workspaceName
