@@ -36,5 +36,5 @@ steps:
       failTaskOnFailedTests: true
       searchFolder: ${{ parameters.workingDirectory }}
       testRunTitle: ${{ parameters.testRunTitle }}
-      testResultsFiles: ${{ parameters.fileName }}
+      testResultsFiles: ${{ parameters.testResultsFileName }}
       testResultsFormat: ${{ parameters.testResultsFormat }}
