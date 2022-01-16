@@ -59,7 +59,7 @@ steps:
     displayName: Destroy
     inputs:
       targetType: inline
-      script: terraform init -no-color ${{ parameters.destroyAdditionalArguments }}
+      script: terraform destroy -auto-approve -no-color ${{ parameters.destroyAdditionalArguments }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
