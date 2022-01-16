@@ -2,7 +2,7 @@ parameters:
   - name: secureFile
     displayName: Name of the secure file to download
     type: string
-    default: $(AWS_CREDENTIALS_SECURE_FILE_NAME)
+    default: aws.credentials
 
 steps:
   - task: DownloadSecureFile@1

@@ -19,7 +19,6 @@ Non-secret variables will be automatically added as environment variables which 
 | Name                               | Description                                                                                     |
 |:-----------------------------------|:------------------------------------------------------------------------------------------------|
 | `AWS_ACCOUNT_ID`                   | AWS account id                                                                                  |
-| `AWS_CREDENTIALS_SECURE_FILE_NAME` | Name of the secure file to download that contains AWS credentials                               |
 | `AWS_DEFAULT_REGION`               | AWS default region                                                                              |
 | `CODEDEPLOY_BUCKET_NAME`           | Name of the bucket that appspec files are uploaded to fo CodeDeploy                             |
 | `ENVIRONMENT`                      | Name of the environment                                                                         |
@@ -113,13 +112,10 @@ The [configure](./aws/iam/configure.yml) template is a [step](https://docs.micro
 
 To use this template you will need to create a [secure file](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/secure-files?view=azure-devops) containing [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html#cli-configure-files-where) using the default profile.
 
-###### Required environment variables
-* `AWS_CREDENTIALS_SECURE_FILE_NAME`
-
 ###### Parameters
-| Name       | Description                                                                                                                                                                      | Type   | Default                               |
-|:-----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------|:--------------------------------------|
-| secureFile | Name of the secure file to download. The default value is the value from the `AWS_CREDENTIALS_SECURE_FILE_NAME` variable set in the variable file mentioned [above](#variables). | string | `$(AWS_CREDENTIALS_SECURE_FILE_NAME)` |
+| Name       | Description                          | Type   | Default           |
+|:-----------|:-------------------------------------|:-------|:------------------|
+| secureFile | Name of the secure file to download. | string | `aws.credentials` |
 
 ###### Example
 ```yaml

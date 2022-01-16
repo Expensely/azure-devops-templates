@@ -1,6 +1,5 @@
 variables:
   AWS_ACCOUNT_ID: 395617268302
-  AWS_CREDENTIALS_SECURE_FILE_NAME: aws.production.us-east-1.credentials
   AWS_DEFAULT_REGION: us-east-1
   ENVIRONMENT: production
   TF_CLI_ARGS_INIT: -backend-config="dynamodb_table=expensely-terraform-lock-production-us-east-1" -backend-config="bucket=expensely-terraform-production-us-east-1"
