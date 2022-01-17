@@ -23,7 +23,7 @@ parameters:
 
 steps:
   - task: PowerShell@2
-    displayName: Download test results file:${{ parameters.testResultsFileName }}
+    displayName: Download test results file
     condition: succeededOrFailed()
     inputs:
       targetType: inline
@@ -34,7 +34,7 @@ steps:
       workingDirectory: ${{ parameters.workingDirectory }}
     
   - task: PublishTestResults@2
-    displayName: Publish test results file:${{ parameters.testResultsFileName }}
+    displayName: Publish test results file
     condition: succeededOrFailed()
     inputs:
       failTaskOnFailedTests: true
