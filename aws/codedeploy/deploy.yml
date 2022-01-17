@@ -1,4 +1,8 @@
 parameters:
+  - name: awsRegion
+    displayName: AWS region to push image to
+    type: string
+    default: $(REGION)
   - name: destinationPath
     displayName: Path(key) in the bucket to upload the specified file to
     type: string
@@ -15,7 +19,7 @@ steps:
     displayName: Push AppSpec file
     inputs:
       targetType: inline
-      script: aws s3 cp ${{ parameters.appSpecFileName }} s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.destinationPath }}/${{ parameters.appSpecFileName }}
+      script: aws s3 cp ${{ parameters.appSpecFileName }} s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.destinationPath }}/${{ parameters.appSpecFileName }} --region ${{ parameters.awsRegion }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
@@ -27,10 +31,10 @@ steps:
     inputs:
       targetType: inline
       script: |
-        $deploymentId = aws deploy create-deployment --cli-input-json file://create-deployment.json --output json --query 'deploymentId' | ConvertFrom-Json
+        $deploymentId = aws deploy create-deployment --cli-input-json file://create-deployment.json --output json --query 'deploymentId' --region ${{ parameters.awsRegion }} | ConvertFrom-Json
         Write-Host "##vso[task.setvariable variable=deploymentId;isOutput=true]$deploymentId"
         Write-Host "Waiting for deployment:$deploymentId to finish"
-        aws deploy wait deployment-successful --deployment-id $deploymentId
+        aws deploy wait deployment-successful --deployment-id $deploymentId --region ${{ parameters.awsRegion }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
@@ -43,7 +47,7 @@ steps:
       targetType: inline
       script: |
         Write-Host "$(deploy.deploymentId)"
-        aws deploy stop-deployment --deployment-id $(deploy.deploymentId) --auto-rollback-enabled
+        aws deploy stop-deployment --deployment-id $(deploy.deploymentId) --auto-rollback-enabled --region ${{ parameters.awsRegion }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true

@@ -1,12 +1,8 @@
 parameters:
-  - name: awsAccountId
-    displayName: AWS account ID to push image to
-    type: string
-    default: $(AWS_ACCOUNT_ID)
   - name: awsRegion
     displayName: AWS region to push image to
     type: string
-    default: $(AWS_DEFAULT_REGION)
+    default: $(REGION)
   - name: imageName
     displayName: Name of the image to push
     type: string
@@ -24,10 +20,10 @@ steps:
     inputs:
       targetType: inline
       script: |
-        $EcrUrl="${{ parameters.awsAccountId }}.dkr.ecr.${{ parameters.awsRegion }}.amazonaws.com"
+        $EcrUrl="$(AWS_ACCOUNT_ID).dkr.ecr.${{ parameters.awsRegion }}.amazonaws.com"
         $EcrImageTag="$EcrUrl/${{ parameters.repositoryName }}:${{ parameters.tag }}"
         docker tag ${{ parameters.imageName }}:${{ parameters.tag }} $EcrImageTag
-        aws ecr get-login-password | docker login --password-stdin --username AWS $EcrUrl
+        aws ecr get-login-password --region ${{ parameters.awsRegion }} | docker login --password-stdin --username AWS $EcrUrl
         docker push $EcrImageTag
       errorActionPreference: default
       showWarnings: true

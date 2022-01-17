@@ -1,4 +1,8 @@
 parameters:
+  - name: awsRegion
+    displayName: AWS region to push image to
+    type: string
+    default: $(REGION)
   - name: sourcePath
     displayName: Key of the test results file
     type: string
@@ -23,7 +27,7 @@ steps:
     condition: succeededOrFailed()
     inputs:
       targetType: inline
-      script: aws s3 cp s3://$(TEST_RESULTS_BUCKET_NAME)/${{ parameters.sourcePath }}/${{ parameters.testResultsFileName }} ${{ parameters.testResultsFileName }}
+      script: aws s3 cp s3://$(TEST_RESULTS_BUCKET_NAME)/${{ parameters.sourcePath }}/${{ parameters.testResultsFileName }} ${{ parameters.testResultsFileName }} --region ${{ parameters.awsRegion }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
