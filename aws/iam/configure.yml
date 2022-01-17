@@ -1,22 +1,60 @@
 parameters:
-  - name: secureFile
-    displayName: Name of the secure file to download
+  - name: filesPrefix
+    displayName: Prefix of the credentials and config files to download
     type: string
-    default: aws.credentials
+    default: aws
 
 steps:
   - task: DownloadSecureFile@1
+    displayName: Download AWS config
+    inputs:
+      secureFile: ${{ parameters.filesPrefix }}.config
+
+  - task: DownloadSecureFile@1
     displayName: Download AWS credentials
     inputs:
-      secureFile: ${{ parameters.secureFile }}
+      secureFile: ${{ parameters.filesPrefix }}.credentials
+
+  - task: PowerShell@2
+    displayName: Set AWS config path
+    inputs:
+      targetType: inline
+      script: |
+        Write-Host "##vso[task.setvariable variable=AWS_CONFIG_FILE]/home/vsts/work/_temp/${{ parameters.filesPrefix }}.config"
+        Write-Host "AWS_CONFIG_FILE:$env:AWS_CONFIG_FILE"
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
 
   - task: PowerShell@2
     displayName: Set AWS credentials path
     inputs:
       targetType: inline
       script: |
-        Write-Host "##vso[task.setvariable variable=AWS_SHARED_CREDENTIALS_FILE]/home/vsts/work/_temp/${{ parameters.secureFile }}"
+        Write-Host "##vso[task.setvariable variable=AWS_SHARED_CREDENTIALS_FILE]/home/vsts/work/_temp/${{ parameters.filesPrefix }}.credentials"
         Write-Host "AWS_SHARED_CREDENTIALS_FILE:$env:AWS_SHARED_CREDENTIALS_FILE"
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+      
+  - task: PowerShell@2
+    displayName: Set AWS credentials path
+    inputs:
+      targetType: inline
+      script: |
+        Write-Host "##vso[task.setvariable variable=AWS_SHARED_CREDENTIALS_FILE]/home/vsts/work/_temp/${{ parameters.filesPrefix }}.credentials"
+        Write-Host "AWS_SHARED_CREDENTIALS_FILE:$env:AWS_SHARED_CREDENTIALS_FILE"
+      errorActionPreference: default
+      showWarnings: true
+      pwsh: true
+
+  - task: PowerShell@2
+    displayName: Set AWS account ID
+    inputs:
+      targetType: inline
+      script: |
+        Write-Host "##vso[task.setvariable variable=AWS_ACCOUNT_ID]$(aws sts get-caller-identity --query 'Account' --output text)"
+        Write-Host "AWS_ACCOUNT_ID:$env:AWS_ACCOUNT_ID"
       errorActionPreference: default
       showWarnings: true
       pwsh: true
