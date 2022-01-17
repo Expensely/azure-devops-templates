@@ -1,5 +1,4 @@
 variables:
-  AWS_ACCOUNT_ID: 395617268302
-  AWS_DEFAULT_REGION: us-east-1
+  REGION: us-east-1
   ENVIRONMENT: preview
   TF_CLI_ARGS_INIT: -backend-config="dynamodb_table=expensely-terraform-lock-production-us-east-1" -backend-config="bucket=expensely-terraform-production-us-east-1"
