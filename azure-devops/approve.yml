@@ -2,6 +2,13 @@ parameters:
   - name: dependsOn
     displayName: Name of job that needs to complete before this job
     type: string
+  - name: onTimeout
+    displayName: Action to take on timeout
+    type: string
+    default: reject
+    values:
+      - reject
+      - resume
   - name: timeoutInMinutes
     displayName: Number of minutes until this job times out
     type: number
@@ -21,8 +28,9 @@ jobs:
     pool: server
     steps:
       - task: ManualValidation@0
+        displayName: Manual validation
         inputs:
           notifyUsers: ${{ parameters.userToNotify }}
-          onTimeout: reject
+          onTimeout: ${{ parameters.onTimeout }}
           instructions: ${{ parameters.validationInstructions }}
         timeoutInMinutes: ${{ parameters.timeoutInMinutes }}

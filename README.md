@@ -168,12 +168,13 @@ This template will provide a manual validation step in the pipeline.
 The [publish-test-results.yml](./azure-devops/approve.yml) is a [job template](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#job-reuse) meaning it needs to be nested under a `jobs:` block.
 
 ###### Parameters
-| Name                   | Description                                        | Type   | Default                    |
-|:-----------------------|:---------------------------------------------------|:-------|:---------------------------|
-| dependsOn              | Name of job that needs to complete before this job | string |                            |
-| timeoutInMinutes       | Number of minutes until this job times out         | number | 60                         |
-| userToNotify           | Users to notify                                    | string |                            |
-| validationInstructions | Validation instructions                            | string | Validate the dependant job |
+| Name                   | Description                                             | Type   | Default                    |
+|:-----------------------|:--------------------------------------------------------|:-------|:---------------------------|
+| dependsOn              | Name of job that needs to complete before this job      | string |                            |
+| onTimeout              | Action to take on timeout. Options are reject or resume | number | reject                     |
+| timeoutInMinutes       | Number of minutes until this job times out              | number | 60                         |
+| userToNotify           | Users to notify                                         | string |                            |
+| validationInstructions | Validation instructions                                 | string | Validate the dependant job |
 
 ###### Example
 ```yaml
@@ -182,7 +183,7 @@ jobs:
     parameters:
       dependsOn: plan
       timeoutInMinutes: 60
-      notifyUsers: '[Expensely]\Expensely Team'
+      userToNotify: '[Expensely]\Expensely Team'
 ```
 
 ## Docker
