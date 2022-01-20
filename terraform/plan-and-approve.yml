@@ -1,0 +1,45 @@
+parameters:
+  - name: artifactName
+    displayName: Name of the Terraform plan artifact
+    type: string
+  - name: environment
+    displayName: Name of the environment to deploy to
+    type: string
+  - name: region
+    displayName: Name of the AWS region deploy to
+    type: string
+  - name: workspaceName
+    displayName: Name of the Terraform workspace
+    type: string
+  
+
+jobs:
+  - job: plan
+    displayName: Plan
+    steps:
+      - template: ../aws/iam/configure.yml
+      - template: plan.yml
+        parameters:
+          artifactName: ${{ parameters.artifactName }}
+          planAdditionalCommandOptions: -var-file="variables/${{ parameters.environment }}.${{ parameters.region }}.tfvars"
+          workspaceName: ${{ parameters.workspaceName }}
+
+  - template: ../azure-devops/approve.yml
+    parameters:
+      dependsOn: plan
+      timeoutInMinutes: 60
+      userToNotify: '[Expensely]\Expensely Team'
+
+  - deployment: apply
+    displayName: Apply
+    dependsOn: approve
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - download: none
+            - template: ../aws/iam/configure.yml
+            - template: apply.yml
+              parameters:
+                artifactName: ${{ parameters.artifactName }}
