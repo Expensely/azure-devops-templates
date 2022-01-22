@@ -32,7 +32,7 @@ steps:
       targetType: inline
       script: |
         $deploymentId = aws deploy create-deployment --cli-input-json file://create-deployment.json --output json --query 'deploymentId' --region ${{ parameters.awsRegion }} | ConvertFrom-Json
-        Write-Host "##vso[task.setvariable variable=deploymentId]$deploymentId"
+        Write-Host "##vso[task.setvariable variable=deploymentId;isOutput=true]$deploymentId"
         Write-Host "Waiting for deployment:$deploymentId to finish"
         aws deploy wait deployment-successful --deployment-id $deploymentId --region ${{ parameters.awsRegion }}
       errorActionPreference: default
