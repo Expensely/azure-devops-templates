@@ -32,7 +32,7 @@ steps:
       targetType: inline
       script: |
         $deploymentId = aws deploy create-deployment --cli-input-json file://create-deployment.json --output json --query 'deploymentId' --region ${{ parameters.awsRegion }} | ConvertFrom-Json
-        Write-Host "##vso[task.setvariable variable=deploymentId;isOutput=true]$deploymentId"
+        Write-Host "##vso[task.setvariable variable=DEPLOYMENT_ID;isOutput=true]$deploymentId"
         Write-Host "Waiting for deployment:$deploymentId to finish"
         aws deploy wait deployment-successful --deployment-id $deploymentId --region ${{ parameters.awsRegion }}
       errorActionPreference: default
@@ -42,12 +42,12 @@ steps:
 
   - task: PowerShell@2
     displayName: Stop deploy
-    condition: or(and(failed(), ne(variables['deploy.deploymentId'], '')), and(canceled(), ne(variables['deploy.deploymentId'], '')))
+    condition: or(and(failed(), ne(variables['deploy.DEPLOYMENT_ID'], '')), and(canceled(), ne(variables['deploy.DEPLOYMENT_ID'], '')))
     inputs:
       targetType: inline
       script: |
-        Write-Host "$(deploymentId)"
-        aws deploy stop-deployment --deployment-id $(deploymentId) --auto-rollback-enabled --region ${{ parameters.awsRegion }}
+        Write-Host "$(deploy.DEPLOYMENT_ID)"
+        aws deploy stop-deployment --deployment-id $(deploy.DEPLOYMENT_ID) --auto-rollback-enabled --region ${{ parameters.awsRegion }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
