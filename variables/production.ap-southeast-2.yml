@@ -1,6 +1,8 @@
 variables:
   REGION: ap-southeast-2
   CODEDEPLOY_BUCKET_NAME: expensely-code-deploy-production
+  COGNITO_USER_POOL_ID: ap-southeast-2_Zm4YXy0JF
   ENVIRONMENT: production
+  TF_ARTIFACT_NAME: terraform.production.ap-southeast-2
   TF_CLI_ARGS_INIT: -backend-config="dynamodb_table=expensely-terraform-lock-production-ap-southeast-2" -backend-config="bucket=expensely-terraform-production-ap-southeast-2" -backend-config="region=ap-southeast-2"
   TEST_RESULTS_BUCKET_NAME: expensely-test-results-production

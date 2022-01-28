@@ -16,14 +16,13 @@ resources:
 ## Variables
 Non-secret variables will be automatically added as environment variables which can be consumed without any mapping. The variables listed below are the minimum needed to use all templates.
 
-| Name                               | Description                                                                                     |
-|:-----------------------------------|:------------------------------------------------------------------------------------------------|
-| `AWS_ACCOUNT_ID`                   | AWS account id                                                                                  |
-| `AWS_DEFAULT_REGION`               | AWS default region                                                                              |
-| `CODEDEPLOY_BUCKET_NAME`           | Name of the bucket that appspec files are uploaded to fo CodeDeploy                             |
-| `ENVIRONMENT`                      | Name of the environment                                                                         |
-| `TF_CLI_ARGS_INIT`                 | Arguments for Terraform init command. Generally this will include backend configuration values. |
-| `TEST_RESULTS_BUCKET_NAME`         | Name of the bucket that integration and load test results are uploaded to.                      |
+| Name                       | Description                                                                                     |
+|:---------------------------|:------------------------------------------------------------------------------------------------|
+| `REGION`                   | AWS default region                                                                              |
+| `CODEDEPLOY_BUCKET_NAME`   | Name of the bucket that appspec files are uploaded to fo CodeDeploy                             |
+| `ENVIRONMENT`              | Name of the environment                                                                         |
+| `TF_CLI_ARGS_INIT`         | Arguments for Terraform init command. Generally this will include backend configuration values. |
+| `TEST_RESULTS_BUCKET_NAME` | Name of the bucket that integration and load test results are uploaded to.                      |
 
 ### Example
 ```yaml
@@ -47,11 +46,12 @@ The [deploy](./aws/codedeploy/deploy.yml) template is a [step](https://docs.micr
 This template does require AWS credentials to be set up, which can be achieved using the [configure](#configure) template.
 
 ###### Required environment variables
-* `CODEDEPLOY_BUCKET_NAME`
+* `REGION`
 
 ###### Parameters
 | Name             | Description                                             | Type   | Default                 |
 |:-----------------|:--------------------------------------------------------|:-------|:------------------------|
+| awsRegion        | AWS region to push image to                             | string | `$(REGION)`             |
 | destinationPath  | Path(key) in the bucket to upload the specified file to | string |                         |
 | appSpecFileName  | Name of the appspec file to upload                      | string |                         |
 | workingDirectory | Directory where the app spec file is located            | string | `$(Pipeline.Workspace)` |
@@ -79,17 +79,15 @@ The [push](./aws/ecr/push.yml) template is a [step](https://docs.microsoft.com/e
 This template does require AWS credentials to be set up, which can be achieved using the [configure](#configure) template.
 
 ###### Required environment variables
-* `AWS_ACCOUNT_ID`
-* `AWS_DEFAULT_REGION`
+* `REGION`
 
 ###### Parameters
-| Name           | Description                             | Type   | Default                 |
-|:---------------|:----------------------------------------|:-------|:------------------------|
-| awsAccountId   | AWS account ID to push image to         | string | `$(AWS_ACCOUNT_ID)`     |
-| awsRegion      | AWS region to push image to             | string | `$(AWS_DEFAULT_REGION)` |
-| imageName      | Name of the image to push               | string |                         |
-| repositoryName | Name of the repository to push image to | string |                         |
-| tag            | Tag of the image to push                | string | `$(Build.BuildNumber)`  |
+| Name           | Description                             | Type   | Default                |
+|:---------------|:----------------------------------------|:-------|:-----------------------|
+| awsRegion      | AWS region to push image to             | string | `$(REGION)`            |
+| imageName      | Name of the image to push               | string |                        |
+| repositoryName | Name of the repository to push image to | string |                        |
+| tag            | Tag of the image to push                | string | `$(Build.BuildNumber)` |
 
 ###### Example
 ```yaml
@@ -107,6 +105,7 @@ This template will configure the AWS credentials
 This template will:
 1. Download the secure file
 2. Set the `AWS_SHARED_CREDENTIALS_FILE` environment variable with the path of the file
+3. Set the `AWS_ACCOUNT_ID` environment variable
 
 The [configure](./aws/iam/configure.yml) template is a [step](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#step-reuse) template meaning it needs to be nested under a `steps:` block.
 
@@ -139,10 +138,12 @@ To use this template you will need to create a [secure file](https://docs.micros
 
 ###### Required environment variables
 * `TEST_RESULTS_BUCKET_NAME`
+* `REGION`
 
 ###### Parameters
 | Name                | Description                           | Type   | Default                 |
 |:--------------------|:--------------------------------------|:-------|:------------------------|
+| awsRegion           | AWS region to push image to           | string | `$(REGION)`             |
 | sourcePath          | Key of the test results file          | string |                         |
 | testResultsFileName | Name of test results file             | string |                         |
 | testResultsFormat   | Tests results format                  | string | `JUnit`                 |
@@ -167,12 +168,13 @@ This template will provide a manual validation step in the pipeline.
 The [publish-test-results.yml](./azure-devops/approve.yml) is a [job template](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#job-reuse) meaning it needs to be nested under a `jobs:` block.
 
 ###### Parameters
-| Name                   | Description                                        | Type   | Default                    |
-|:-----------------------|:---------------------------------------------------|:-------|:---------------------------|
-| dependsOn              | Name of job that needs to complete before this job | string |                            |
-| timeoutInMinutes       | Number of minutes until this job times out         | number | 60                         |
-| userToNotify           | Users to notify                                    | string |                            |
-| validationInstructions | Validation instructions                            | string | Validate the dependant job |
+| Name                   | Description                                             | Type   | Default                    |
+|:-----------------------|:--------------------------------------------------------|:-------|:---------------------------|
+| dependsOn              | Name of job that needs to complete before this job      | string |                            |
+| onTimeout              | Action to take on timeout. Options are reject or resume | number | reject                     |
+| timeoutInMinutes       | Number of minutes until this job times out              | number | 60                         |
+| userToNotify           | Users to notify                                         | string |                            |
+| validationInstructions | Validation instructions                                 | string | Validate the dependant job |
 
 ###### Example
 ```yaml
@@ -181,7 +183,7 @@ jobs:
     parameters:
       dependsOn: plan
       timeoutInMinutes: 60
-      notifyUsers: '[Expensely]\Expensely Team'
+      userToNotify: '[Expensely]\Expensely Team'
 ```
 
 ## Docker
@@ -451,7 +453,7 @@ stages:
             parameters:
               artifactName: $(ARTIFACT_NAME)
               workspaceName: service-time-$(ENVIRONMENT)$(System.PullRequest.PullRequestNumber)
-              planAdditionalCommandOptions: '-var-file="variables/$(ENVIRONMENT).$(AWS_DEFAULT_REGION).tfvars" -var="build_identifier=$(Build.BuildNumber)" -var="environment=Preview$(System.PullRequest.PullRequestNumber)" -var="subdomain=time$(System.PullRequest.PullRequestNumber)" -var="npm_build_identifier=$(NPM_BUILD_NUMBER)"'
+              planAdditionalCommandOptions: '-var-file="variables/$(ENVIRONMENT).$(REGION).tfvars" -var="build_identifier=$(Build.BuildNumber)" -var="environment=Preview$(System.PullRequest.PullRequestNumber)" -var="subdomain=time$(System.PullRequest.PullRequestNumber)" -var="npm_build_identifier=$(NPM_BUILD_NUMBER)"'
       - deployment: deploy
         displayName: Deploy
         dependsOn:
