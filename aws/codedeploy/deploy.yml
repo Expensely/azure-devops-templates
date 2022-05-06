@@ -1,8 +1,4 @@
 parameters:
-  - name: awsRegion
-    displayName: AWS region to push image to
-    type: string
-    default: $(REGION)
   - name: destinationPath
     displayName: Path(key) in the bucket to upload the specified file to
     type: string
@@ -19,7 +15,7 @@ steps:
     displayName: Push AppSpec file
     inputs:
       targetType: inline
-      script: aws s3 cp ${{ parameters.appSpecFileName }} s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.destinationPath }}/${{ parameters.appSpecFileName }} --region ${{ parameters.awsRegion }}
+      script: aws s3 cp ${{ parameters.appSpecFileName }} s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.destinationPath }}/${{ parameters.appSpecFileName }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
@@ -31,10 +27,10 @@ steps:
     inputs:
       targetType: inline
       script: |
-        $deploymentId = aws deploy create-deployment --cli-input-json file://create-deployment.json --output json --query 'deploymentId' --region ${{ parameters.awsRegion }} | ConvertFrom-Json
+        $deploymentId = aws deploy create-deployment --cli-input-json file://create-deployment.json --output json --query 'deploymentId' | ConvertFrom-Json
         Write-Host "##vso[task.setvariable variable=DEPLOYMENT_ID;isOutput=true]$deploymentId"
         Write-Host "Waiting for deployment:$deploymentId to finish"
-        aws deploy wait deployment-successful --deployment-id $deploymentId --region ${{ parameters.awsRegion }}
+        aws deploy wait deployment-successful --deployment-id $deploymentId
       errorActionPreference: default
       showWarnings: true
       pwsh: true
@@ -47,7 +43,7 @@ steps:
       targetType: inline
       script: |
         Write-Host "$(deploy.DEPLOYMENT_ID)"
-        aws deploy stop-deployment --deployment-id $(deploy.DEPLOYMENT_ID) --auto-rollback-enabled --region ${{ parameters.awsRegion }}
+        aws deploy stop-deployment --deployment-id $(deploy.DEPLOYMENT_ID) --auto-rollback-enabled
       errorActionPreference: default
       showWarnings: true
       pwsh: true

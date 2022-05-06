@@ -1,5 +1,5 @@
 variables:
-  REGION: us-east-1
+  AWS_DEFAULT_REGION: us-east-1
   ENVIRONMENT: production
   TF_ARTIFACT_NAME: terraform.production.us-east-1
   TF_CLI_ARGS_INIT: -backend-config="dynamodb_table=expensely-terraform-lock-production-us-east-1" -backend-config="bucket=expensely-terraform-production-us-east-1" -backend-config="region=us-east-1"

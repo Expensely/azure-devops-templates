@@ -18,7 +18,7 @@ Non-secret variables will be automatically added as environment variables which 
 
 | Name                       | Description                                                                                     |
 |:---------------------------|:------------------------------------------------------------------------------------------------|
-| `REGION`                   | AWS default region                                                                              |
+| `AWS_DEFAULT_REGION`       | AWS default region                                                                              |
 | `CODEDEPLOY_BUCKET_NAME`   | Name of the bucket that appspec files are uploaded to fo CodeDeploy                             |
 | `ENVIRONMENT`              | Name of the environment                                                                         |
 | `TF_CLI_ARGS_INIT`         | Arguments for Terraform init command. Generally this will include backend configuration values. |
@@ -45,13 +45,9 @@ The [deploy](./aws/codedeploy/deploy.yml) template is a [step](https://docs.micr
 
 This template does require AWS credentials to be set up, which can be achieved using the [configure](#configure) template.
 
-###### Required environment variables
-* `REGION`
-
 ###### Parameters
 | Name             | Description                                             | Type   | Default                 |
 |:-----------------|:--------------------------------------------------------|:-------|:------------------------|
-| awsRegion        | AWS region to push image to                             | string | `$(REGION)`             |
 | destinationPath  | Path(key) in the bucket to upload the specified file to | string |                         |
 | appSpecFileName  | Name of the appspec file to upload                      | string |                         |
 | workingDirectory | Directory where the app spec file is located            | string | `$(Pipeline.Workspace)` |
@@ -78,13 +74,9 @@ The [push](./aws/ecr/push.yml) template is a [step](https://docs.microsoft.com/e
 
 This template does require AWS credentials to be set up, which can be achieved using the [configure](#configure) template.
 
-###### Required environment variables
-* `REGION`
-
 ###### Parameters
 | Name           | Description                             | Type   | Default                |
 |:---------------|:----------------------------------------|:-------|:-----------------------|
-| awsRegion      | AWS region to push image to             | string | `$(REGION)`            |
 | imageName      | Name of the image to push               | string |                        |
 | repositoryName | Name of the repository to push image to | string |                        |
 | tag            | Tag of the image to push                | string | `$(Build.BuildNumber)` |
@@ -138,12 +130,10 @@ To use this template you will need to create a [secure file](https://docs.micros
 
 ###### Required environment variables
 * `TEST_RESULTS_BUCKET_NAME`
-* `REGION`
 
 ###### Parameters
 | Name                | Description                           | Type   | Default                 |
 |:--------------------|:--------------------------------------|:-------|:------------------------|
-| awsRegion           | AWS region to push image to           | string | `$(REGION)`             |
 | sourcePath          | Key of the test results file          | string |                         |
 | testResultsFileName | Name of test results file             | string |                         |
 | testResultsFormat   | Tests results format                  | string | `JUnit`                 |
@@ -453,7 +443,7 @@ stages:
             parameters:
               artifactName: $(ARTIFACT_NAME)
               workspaceName: service-time-$(ENVIRONMENT)$(System.PullRequest.PullRequestNumber)
-              planAdditionalCommandOptions: '-var-file="variables/$(ENVIRONMENT).$(REGION).tfvars" -var="build_identifier=$(Build.BuildNumber)" -var="environment=Preview$(System.PullRequest.PullRequestNumber)" -var="subdomain=time$(System.PullRequest.PullRequestNumber)" -var="npm_build_identifier=$(NPM_BUILD_NUMBER)"'
+              planAdditionalCommandOptions: '-var-file="variables/$(ENVIRONMENT).$($(AWS_DEFAULT_REGION)).tfvars" -var="build_identifier=$(Build.BuildNumber)" -var="environment=Preview$(System.PullRequest.PullRequestNumber)" -var="subdomain=time$(System.PullRequest.PullRequestNumber)" -var="npm_build_identifier=$(NPM_BUILD_NUMBER)"'
       - deployment: deploy
         displayName: Deploy
         dependsOn:

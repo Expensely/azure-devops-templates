@@ -1,5 +1,5 @@
 variables:
-  REGION: ap-southeast-2
+  AWS_DEFAULT_REGION: ap-southeast-2
   CODEDEPLOY_BUCKET_NAME: expensely-code-deploy-production
   COGNITO_USER_POOL_ID: ap-southeast-2_Z3MVGn7hg
   ENVIRONMENT: preview

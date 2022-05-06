@@ -5,9 +5,6 @@ parameters:
   - name: environment
     displayName: Name of the environment to deploy to
     type: string
-  - name: region
-    displayName: Name of the AWS region deploy to
-    type: string
   - name: workspaceName
     displayName: Name of the Terraform workspace
     type: string
@@ -21,7 +18,7 @@ jobs:
       - template: plan.yml
         parameters:
           artifactName: ${{ parameters.artifactName }}
-          planAdditionalCommandOptions: -var-file="variables/${{ parameters.environment }}.${{ parameters.region }}.tfvars"
+          planAdditionalCommandOptions: -var-file="variables/${{ parameters.environment }}.$(AWS_DEFAULT_REGION).tfvars"
           workspaceName: ${{ parameters.workspaceName }}
 
   - template: ../azure-devops/approve.yml
