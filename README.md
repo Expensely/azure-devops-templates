@@ -22,7 +22,6 @@ Non-secret variables will be automatically added as environment variables which 
 | `CODEDEPLOY_BUCKET_NAME`   | Name of the bucket that appspec files are uploaded to fo CodeDeploy                             |
 | `ENVIRONMENT`              | Name of the environment                                                                         |
 | `TF_CLI_ARGS_INIT`         | Arguments for Terraform init command. Generally this will include backend configuration values. |
-| `TEST_RESULTS_BUCKET_NAME` | Name of the bucket that integration and load test results are uploaded to.                      |
 
 ### Example
 ```yaml
@@ -127,9 +126,6 @@ This template will:
 The [publish test results](./aws/s3/publish-test-results.yml) template is a [step](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#step-reuse) template meaning it needs to be nested under a `steps:` block.
 
 To use this template you will need to create a [secure file](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/secure-files?view=azure-devops) containing [AWS credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html#cli-configure-files-where) using the default profile.
-
-###### Required environment variables
-* `TEST_RESULTS_BUCKET_NAME`
 
 ###### Parameters
 | Name                | Description                           | Type   | Default                 |

@@ -23,7 +23,7 @@ steps:
     condition: succeededOrFailed()
     inputs:
       targetType: inline
-      script: aws s3 cp s3://$(TEST_RESULTS_BUCKET_NAME)/${{ parameters.sourcePath }}/${{ parameters.testResultsFileName }} ${{ parameters.testResultsFileName }}
+      script: aws s3 cp s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.sourcePath }}/${{ parameters.testResultsFileName }} ${{ parameters.testResultsFileName }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
