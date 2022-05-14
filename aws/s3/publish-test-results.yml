@@ -20,10 +20,11 @@ parameters:
 steps:
   - task: PowerShell@2
     displayName: Download test results file
-    condition: succeededOrFailed()
+    condition: or(and(always(), eq(variables['deploy.DEPLOYMENT_STATUS'], 'STARTED')), and(always(), eq(variables['deploy.DEPLOYMENT_STATUS'], 'COMPLETED')))
     inputs:
       targetType: inline
-      script: aws s3 cp s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.sourcePath }}/${{ parameters.testResultsFileName }} ${{ parameters.testResultsFileName }}
+      script: |
+        aws s3 cp s3://$(CODEDEPLOY_BUCKET_NAME)/${{ parameters.sourcePath }}/${{ parameters.testResultsFileName }} ${{ parameters.testResultsFileName }}
       errorActionPreference: default
       showWarnings: true
       pwsh: true
@@ -31,7 +32,7 @@ steps:
     
   - task: PublishTestResults@2
     displayName: Publish test results file
-    condition: succeededOrFailed()
+    condition: or(and(always(), eq(variables['deploy.DEPLOYMENT_STATUS'], 'STARTED')), and(always(), eq(variables['deploy.DEPLOYMENT_STATUS'], 'COMPLETED')))
     inputs:
       failTaskOnFailedTests: true
       searchFolder: ${{ parameters.workingDirectory }}
