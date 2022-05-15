@@ -40,7 +40,7 @@ steps:
 
   - task: PowerShell@2
     displayName: Stop deploy
-    condition: and(canceled(), eq(variables['deploy.DEPLOYMENT_STATUS'], 'STARTED'))
+    condition: or(and(canceled(), eq(variables['deploy.DEPLOYMENT_STATUS'], 'STARTED')), and(failed(), eq(variables['deploy.DEPLOYMENT_STATUS'], 'STARTED')))
     inputs:
       targetType: inline
       script: |
