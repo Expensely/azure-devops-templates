@@ -45,7 +45,7 @@ steps:
       targetType: inline
       script: |
         Write-Host "$(deploy.DEPLOYMENT_ID)"
-        aws deploy stop-deployment --deployment-id $(deploy.DEPLOYMENT_ID) --auto-rollback-enabled
+        aws deploy stop-deployment --deployment-id $(deploy.DEPLOYMENT_ID)
       errorActionPreference: default
       showWarnings: true
       pwsh: true
