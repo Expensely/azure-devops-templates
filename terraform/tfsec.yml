@@ -22,7 +22,7 @@ steps:
     inputs:
       targetType: inline
       script: |
-        tfsec . --verbose ${{ parameters.commandOptions }}
+        tfsec . ${{ parameters.commandOptions }}
       errorActionPreference: stop
       showWarnings: true
       pwsh: true

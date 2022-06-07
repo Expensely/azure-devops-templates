@@ -63,6 +63,7 @@ steps:
       targetType: inline
       script: |
         terraform plan -no-color -out="plan.tfplan" ${{ parameters.planAdditionalCommandOptions }}
+        terraform show -json plan.tfplan > plan.json
       errorActionPreference: stop
       showWarnings: true
       pwsh: true
