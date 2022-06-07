@@ -299,7 +299,7 @@ This template will install the specified Terraform version, initialise Terraform
 
 and apply the changes described in `.tfplan` file.
 
-The [apply](./terraform/apply.yml) template is a [step](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#step-reuse) template meaning it needs to be nested under a `steps:` block.
+The [plan](./terraform/plan.yml) template is a [step](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#step-reuse) template meaning it needs to be nested under a `steps:` block.
 
 If you are going to use this to apply changes to infrastructure in AWS you will need to configure the credentials using the [configure](#configure) template.
 
@@ -322,6 +322,34 @@ If you are going to use this to apply changes to infrastructure in AWS you will 
   parameters:
     artifactName: preview.terraform.plan
     workspaceName: time-preview-23
+```
+
+### Tfsec
+
+Static analysis of your terraform code to spot potential misconfigurations
+
+This template will:
+1. Install the specified tfsec version
+2. Run tfsec
+
+The [tfsec](./terraform/tfsec.yml) template is a [step](https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops#step-reuse) template meaning it needs to be nested under a `steps:` block.
+
+If you are going to use this to apply changes to infrastructure in AWS you will need to configure the credentials using the [configure](#configure) template.
+
+##### Parameters
+| Name             | Description                                                    | Type   | Default                                    |
+|:-----------------|:---------------------------------------------------------------|:-------|:-------------------------------------------|
+| version          | Terraform Static code Analyzer version to download and install | string | 0.58.6                                     |
+| commandOptions   | Command options                                                | string |                                            |
+| workingDirectory | Directory where Terraform files are located                    | string | `$(Build.SourcesDirectory)/infrastructure` |
+
+##### Example
+```yaml
+- template: ./terraform/tfsec.yml@templates
+  parameters:
+    version: 0.58.6
+    commandOptions: -var-file="variables/${{ variables.ENVIRONMENT }}.${{ variables.AWS_DEFAULT_REGION }}.tfvars"
+    workingDirectory: $(Build.SourcesDirectory)/infrastructure
 ```
 
 ## Working example
