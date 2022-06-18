@@ -2,18 +2,18 @@ parameters:
   - name: apiKey
     displayName: Infracost api key
     type: string
-    default: 0.10.x
   - name: version
     displayName: Infracost version to install
     type: string
     default: 0.10.x
+  - name: enableDashboard
+    displayName: Enable Infracost dashboard
+    type: boolean
+    default: true
   - name: currency
     displayName: Currency to show cost in
     type: string
     default: AUD
-  - name: githubServiceConnectionName
-    displayName: Name of GitHub service connection
-    type: string
   - name: workingDirectory
     displayName: Directory where Terraform files are located
     type: string
@@ -26,24 +26,29 @@ steps:
       apiKey: ${{ parameters.apiKey }}
       version: ${{ parameters.version }}
       currency: ${{ parameters.currency }}
-      enableDashboard: true
+      enableDashboard: ${{ parameters.enableDashboard }}
   - task: PowerShell@2
     displayName: Run Infracost Breakdown
     name: infracost_breakdown
     inputs:
       targetType: inline
-      script: |
-        infracost breakdown --path plan.json --format json --out-file infracost.json
-        $diff = infracost output --path infracost.json --format github-comment
-        Write-Host "##vso[task.setvariable variable=DIFF;isOutput=true]$diff"
+      script: infracost breakdown --config-file infracost.yml --format json --out-file infracost-report.json --sync-usage-file --show-skipped
       errorActionPreference: stop
       showWarnings: true
       pwsh: true
       workingDirectory: ${{ parameters.workingDirectory }}
-  - task: GitHubComment@0
-    displayName: Comment GitHub Repo
+  - task: PowerShell@2
+    displayName: Generate HTML report
     inputs:
-      gitHubConnection: ${{ parameters.githubServiceConnectionName }}
-      repositoryName: $(Build.Repository.Name)
-      id: $(System.PullRequest.PullRequestNumber)
-      comment: $(infracost_breakdown.DIFF)
+      targetType: inline
+      script: |
+        infracost output --path infracost-report.json --format html --out-file infracost-report.html
+      errorActionPreference: stop
+      showWarnings: true
+      pwsh: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+  - task: JakubRumpca.azure-pipelines-html-report.PublishHtmlReport.PublishHtmlReport@1
+    displayName: Publish Infracost HTML report
+    inputs:
+      tabName: Infracost
+      reportDir: ${{ parameters.workingDirectory }}/infracost-report.html
