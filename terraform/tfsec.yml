@@ -2,7 +2,7 @@ parameters:
   - name: version
     displayName: Terraform Static code Analyzer version to download and install
     type: string
-    default: 0.58.6
+    default: 1.26.0
   - name: commandOptions
     displayName: Command options
     type: string
@@ -22,9 +22,14 @@ steps:
     inputs:
       targetType: inline
       script: |
-        tfsec . ${{ parameters.commandOptions }}
+        tfsec . ${{ parameters.commandOptions }} --format html --out tfsec-report.html
       errorActionPreference: stop
       showWarnings: true
       pwsh: true
       workingDirectory: ${{ parameters.workingDirectory }}
+  - task: JakubRumpca.azure-pipelines-html-report.PublishHtmlReport.PublishHtmlReport@1
+    displayName: Publish tfsec HTML report
+    inputs:
+      tabName: tfsec
+      reportDir: ${{ parameters.workingDirectory }}/tfsec-report.html
 
