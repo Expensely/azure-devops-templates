@@ -6,6 +6,10 @@ parameters:
     displayName: Infracost version to install
     type: string
     default: 0.10.x
+  - name: breakdownAdditionalCommandOptions
+    displayName: Additional command options for Infracost breakdown command
+    type: string
+    default: " "
   - name: enableDashboard
     displayName: Enable Infracost dashboard
     type: boolean
@@ -32,7 +36,7 @@ steps:
     name: infracost_breakdown
     inputs:
       targetType: inline
-      script: infracost breakdown --config-file infracost.yml --format json --out-file infracost-report.json --sync-usage-file --show-skipped
+      script: infracost breakdown --path . --format json --out-file infracost-report.json --sync-usage-file --usage-file infracost-usage.yml ${{ parameters.breakdownAdditionalCommandOptions }}
       errorActionPreference: stop
       showWarnings: true
       pwsh: true
@@ -41,8 +45,7 @@ steps:
     displayName: Generate HTML report
     inputs:
       targetType: inline
-      script: |
-        infracost output --path infracost-report.json --format html --out-file infracost-report.html
+      script: infracost output --path infracost-report.json --format html --out-file infracost-report.html
       errorActionPreference: stop
       showWarnings: true
       pwsh: true
